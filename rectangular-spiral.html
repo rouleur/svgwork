@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<body bgcolor="gray">
+<div id="graph" align="center"></div>
+</body>
+<script src="d3.v3.min.js" charset="utf-8"></script>
+<script>
+    var width = 1000;
+    var height = 1000;
+    var svg = d3.select("#graph").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+    var dx = 13;
+    var dy = 13;
+    x0 = 500;
+    y0 = 500;
+    var size = 190;
+
+
+    function appendLine(svg, d, strokeColor, strokeWidth) {
+        svg.append("path")
+                .attr("d", d).attr("stroke", strokeColor)
+                .attr("stroke-width", strokeWidth);
+    }
+
+
+    function baseArray(n) {
+        var thearray = [];
+        for (var i = 1; i < n; i++) {
+            thearray.push(i);
+            thearray.push(i);
+            thearray.push(-i);
+            thearray.push(-i);
+        }
+        return thearray;
+    }
+
+    var xx = baseArray(size);
+    var yy = baseArray(size);
+    xx.unshift(0);
+    yy.unshift(0, 0);
+
+
+    var spiral = "";
+    for (var i = 0; i < size; i++) {
+        spiral += "M" + (x0 + xx[i] * dx) + "," + (y0 + yy[i] * dy) + " L" + (x0 + xx[i + 1] * dx) + "," + (y0 + yy[i + 1] * dy);
+    }
+
+    appendLine(svg, spiral, "yellow", 1);
+
+</script>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ulam Spiral with D3</title>
+    <script src="d3.v3.min.js" charset="utf-8"></script>
+</head>
+<body bgcolor="gray">
+<div id="graph" align="center"></div>
+</body>
+<script>
+    var width = 1300;
+    var height = 900;
+    var svg = d3.select("#graph").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+    var dx = 20;
+    var dy = 20;
+    x0 = width / 2;
+    y0 = height / 2;
+    var size = 250;
+
+    function baseArray(n) {
+        var thearray = [];
+        for (var i = 1; i < n; i++) {
+            thearray.push(i);
+            thearray.push(i);
+            thearray.push(-i);
+            thearray.push(-i);
+        }
+        return thearray;
+    }
+
+    var xx = baseArray(size);
+    var yy = baseArray(size);
+    xx.unshift(0);
+    yy.unshift(0, 0);
+
+    var data = [];
+
+    var Pos = function (x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    //TODO cleaning needed!!
+    for (var i = 0; i < size; i++) {
+        if (data.length > 2) {
+            var last = data[data.length - 1];
+            if (last.x > xx[i]) {
+                var dif = last.x - xx[i];
+                for (var j = 1; j < dif; j++) {
+                    data.push(new Pos(last.x - j, yy[i]));
+                }
+            }
+            if (last.x < xx[i]) {
+                var dif = last.x - xx[i];
+                for (var j = 1; j < -dif; j++) {
+                    data.push(new Pos(last.x + j, yy[i]));
+                }
+            }
+            if (last.y > yy[i]) {
+                var dif = last.y - yy[i];
+                for (var j = 1; j < dif; j++) {
+                    data.push(new Pos(xx[i], last.y - j));
+                }
+            }
+            if (last.y < yy[i]) {
+                var dif = last.y - yy[i];
+                for (var j = 1; j < -dif; j++) {
+                    data.push(new Pos(xx[i], last.y + j));
+                }
+            }
+        }
+        data.push(new Pos(xx[i], yy[i]));
+    }
+
+    var primes = [];
+    function isPrime(n) {
+        console.log(n);
+        if (n == 1) return false;
+        var checkPoint = Math.sqrt(n);
+        for (var i = 0; primes[i] <= checkPoint; i++) {
+            if (n % primes[i] == 0) {
+                return false;
+            }
+        }
+        primes.push(n);
+        return true;
+    }
+
+    function fontSize(i) {
+        if (i > 998) {
+            return "8px";
+        } else if (i > 98) {
+            return "9px";
+        } else if (i > 8) {
+            return "10px";
+        } else {
+            return "11px";
+        }
+    }
+
+
+    var text = svg.selectAll("text")
+            .data(data)
+            .enter()
+            .append("text");
+
+
+    var textLabels = text
+            .attr("x", function (d) {
+                return d.x * dx + width / 2;
+            })
+            .attr("y", function (d) {
+                return d.y * dy + height / 2;
+            })
+            .text(function (d, i) {
+                return  i + 1;
+            })
+            .attr("text-anchor", "middle")
+            .attr("font-family", "helvetica")
+            .attr("font-size", fontSize(i))
+            .attr("fill", function(d,i) {
+                if(i+1==1) return "red";
+                if(isPrime(i+1)) {
+                    return "yellow";
+                } else {return "black";}
+            });
+
+</script>
+</html>

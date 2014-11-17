@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<body bgcolor="gray">
+<div id="graph" align="center"></div>
+</body>
+<script src="d3.v3.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+    var width = 1500;
+    var height = 1500;
+    var svg = d3.select("#graph").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+    var step = 10;
+    var horizontanLines = "";
+    for (i = 1; i < height / step; i++) {
+        horizontanLines += "M0," + step * i + " L" + width + "," + step * i + " ";
+    }
+    var verticalLines = "";
+    for (i = 1; i < width / step; i++) {
+        verticalLines += "M" + step * i + ",0 L" + step * i + "," + width + " ";
+    }
+    function appendLine(svg, d, strokeColor, strokeWidth) {
+        svg.append("path")
+                .attr("d", d).attr("stroke", strokeColor)
+                .attr("stroke-width", strokeWidth);
+    }
+    appendLine(svg, verticalLines, "yellow", 1);
+    appendLine(svg, horizontanLines, "yellow", 1);
+
+    svg.append("animate")
+            .attr("attributeName", "viewBox")
+            .attr("dur", "30s")
+            .attr("values", "200 200 10 10; 300 520 500 500;0 0 800 800")
+            .attr("fill", "freeze");
+
+
+    svg.append("animate")
+            .attr("attributeName", "viewBox")
+            .attr("dur", "30s")
+            .attr("values", "200 200 10 10; 300 520 500 500;0 0 800 800")
+            .attr("fill", "freeze");
+
+</script>
+</html>

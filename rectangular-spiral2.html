@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<body bgcolor="gray">
+<div id="graph" align="center"></div>
+</body>
+<script src="d3.v3.min.js" charset="utf-8"></script>
+<script>
+    var width = 1000;
+    var height = 1000;
+    var svg = d3.select("#graph").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+    var dx = 20;
+    var dy = 20;
+    x0 = 500;
+    y0 = 500;
+    var size = 190;
+
+
+    function appendLine(svg, d, strokeColor, strokeWidth) {
+        svg.append("path")
+                .attr("d", d).attr("stroke", strokeColor)
+                .attr("stroke-width", strokeWidth);
+    }
+
+
+    function baseArray(n) {
+        var thearray = [];
+        for (var i = 1; i < n; i++) {
+            thearray.push(i);
+            thearray.push(i);
+            thearray.push(-i);
+            thearray.push(-i);
+        }
+        return thearray;
+    }
+
+    var xx = baseArray(size);
+    var yy = baseArray(size);
+    xx.unshift(0);
+    yy.unshift(0, 0);
+
+    var data = [];
+
+    var Pos = function (x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    for (var i = 1; i < size; i++) {
+        data.push(new Pos(xx[i], yy[i]));
+    }
+
+    var spiral = d3.svg.line()
+            .x(function (d) {
+                return d.x * dx + width / 2;
+                ;
+            })
+            .y(function (d) {
+                return d.y * dy + height / 2;
+            })
+            .interpolate("monotone");
+
+    appendLine(svg, spiral(data), "yellow", 1);
+
+</script>
+</html>
