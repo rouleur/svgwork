@@ -2,10 +2,10 @@
 <html>
 <head>
     <title>Ulam Spiral with D3</title>
-    <script src="d3.v3.min.js" charset="utf-8"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.13/d3.min.js" charset="utf-8"></script>
 </head>
 <body bgcolor="gray">
-<div id="graph" align="center"></div>
+    <div id="graph" align="center"></div>
 </body>
 <script>
     var width = 1300;
@@ -17,66 +17,63 @@
     var dy = 20;
     x0 = width / 2;
     y0 = height / 2;
-    var size = 250;
+    var size = 100;
 
-    function baseArray(n) {
-        var thearray = [];
+    function generateBaseArray(n) {
+        var result = [];
         for (var i = 1; i < n; i++) {
-            thearray.push(i);
-            thearray.push(i);
-            thearray.push(-i);
-            thearray.push(-i);
+            result.push(i);
+            result.push(i);
+            result.push(-i);
+            result.push(-i);
         }
-        return thearray;
+        return result;
     }
 
-    var xx = baseArray(size);
-    var yy = baseArray(size);
-    xx.unshift(0);
-    yy.unshift(0, 0);
+    var cornerCoordsForX = generateBaseArray(size);
+    var cornerCoordsForY = generateBaseArray(size);
+    cornerCoordsForX.unshift(0);
+    cornerCoordsForY.unshift(0, 0);
 
-    var data = [];
-
-    var Pos = function (x, y) {
+    var Position = function (x, y) {
         this.x = x;
         this.y = y;
     }
 
-    //TODO cleaning needed!!
+    var graphData = [];
     for (var i = 0; i < size; i++) {
-        if (data.length > 2) {
-            var last = data[data.length - 1];
-            if (last.x > xx[i]) {
-                var dif = last.x - xx[i];
+        if (graphData.length > 2) {
+            var last = graphData[graphData.length - 1];
+            if (last.x > cornerCoordsForX[i]) {
+                var dif = last.x - cornerCoordsForX[i];
                 for (var j = 1; j < dif; j++) {
-                    data.push(new Pos(last.x - j, yy[i]));
+                    graphData.push(new Position(last.x - j, cornerCoordsForY[i]));
                 }
             }
-            if (last.x < xx[i]) {
-                var dif = last.x - xx[i];
+            if (last.x < cornerCoordsForX[i]) {
+                var dif = last.x - cornerCoordsForX[i];
                 for (var j = 1; j < -dif; j++) {
-                    data.push(new Pos(last.x + j, yy[i]));
+                    graphData.push(new Position(last.x + j, cornerCoordsForY[i]));
                 }
             }
-            if (last.y > yy[i]) {
-                var dif = last.y - yy[i];
+            if (last.y > cornerCoordsForY[i]) {
+                var dif = last.y - cornerCoordsForY[i];
                 for (var j = 1; j < dif; j++) {
-                    data.push(new Pos(xx[i], last.y - j));
+                    graphData.push(new Position(cornerCoordsForX[i], last.y - j));
                 }
             }
-            if (last.y < yy[i]) {
-                var dif = last.y - yy[i];
+            if (last.y < cornerCoordsForY[i]) {
+                var dif = last.y - cornerCoordsForY[i];
                 for (var j = 1; j < -dif; j++) {
-                    data.push(new Pos(xx[i], last.y + j));
+                    graphData.push(new Position(cornerCoordsForX[i], last.y + j));
                 }
             }
         }
-        data.push(new Pos(xx[i], yy[i]));
+        graphData.push(new Position(cornerCoordsForX[i], cornerCoordsForY[i]));
     }
 
     var primes = [];
     function isPrime(n) {
-        console.log(n);
         if (n == 1) return false;
         var checkPoint = Math.sqrt(n);
         for (var i = 0; primes[i] <= checkPoint; i++) {
@@ -100,12 +97,10 @@
         }
     }
 
-
     var text = svg.selectAll("text")
-            .data(data)
+            .data(graphData)
             .enter()
             .append("text");
-
 
     var textLabels = text
             .attr("x", function (d) {
@@ -120,11 +115,13 @@
             .attr("text-anchor", "middle")
             .attr("font-family", "helvetica")
             .attr("font-size", fontSize(i))
-            .attr("fill", function(d,i) {
-                if(i+1==1) return "red";
-                if(isPrime(i+1)) {
+            .attr("fill", function (d, i) {
+                if (i + 1 == 1) return "red";
+                if (isPrime(i + 1)) {
                     return "yellow";
-                } else {return "black";}
+                } else {
+                    return "black";
+                }
             });
 
 </script>
